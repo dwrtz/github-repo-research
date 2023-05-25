@@ -112,3 +112,6 @@ if __name__ == "__main__":
             print(f"\tPR #{index} url: {pull_request.url}")
             print(f"\tPR #{index} diff url: {pull_request.diff_url}")
             print("")
+
+# save to json
+to_json(pull_requests, "data.json")
