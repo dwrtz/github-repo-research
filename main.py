@@ -1,5 +1,6 @@
 import os
 import json
+import time
 from dotenv import load_dotenv
 from github import Github
 from dataclasses import dataclass, asdict, is_dataclass
@@ -54,6 +55,18 @@ def from_json(filename):
     return [deserialize(item) for item in data]
 
 
+RATE_LIMIT = 5000  # per hour
+WAIT_TIME = 3600 / (1.1 * RATE_LIMIT)  # in seconds
+
+# repo pagination
+REPOS_PAGE_SIZE = 4
+REPOS_PAGE_NUMBER = 1
+
+# pr pagination
+PR_PAGE_SIZE = 4
+PR_PAGE_NUMBER = 1
+
+
 if __name__ == "__main__":
     load_dotenv()
 
@@ -64,19 +77,12 @@ if __name__ == "__main__":
     search_query = "stars:100..10000 language:python"
     result = g.search_repositories(query=search_query, sort="stars", order="desc")
 
-    # repo pagination
-    REPOS_PAGE_SIZE = 4
-    REPOS_PAGE_NUMBER = 1
-
-    # pr pagination
-    PR_PAGE_SIZE = 4
-    PR_PAGE_NUMBER = 1
-
     pull_requests = []
 
     start_index = REPOS_PAGE_SIZE * (REPOS_PAGE_NUMBER - 1)
     end_index = REPOS_PAGE_SIZE * REPOS_PAGE_NUMBER
     for i, repo in enumerate(result[start_index:end_index]):
+        time.sleep(WAIT_TIME)
         index = REPOS_PAGE_SIZE * (REPOS_PAGE_NUMBER - 1) + i + 1
         repository = Repository(
             owner=repo.owner.login,
@@ -95,6 +101,7 @@ if __name__ == "__main__":
         start_index = PR_PAGE_SIZE * (PR_PAGE_NUMBER - 1)
         end_index = PR_PAGE_SIZE * PR_PAGE_NUMBER
         for i, pr in enumerate(pulls[start_index:end_index]):
+            time.sleep(WAIT_TIME)
             index = PR_PAGE_SIZE * (PR_PAGE_NUMBER - 1) + i + 1
             pull_request = PullRequest(
                 title=pr.title,
