@@ -78,10 +78,17 @@ if __name__ == "__main__":
     end_index = REPOS_PAGE_SIZE * REPOS_PAGE_NUMBER
     for i, repo in enumerate(result[start_index:end_index]):
         index = REPOS_PAGE_SIZE * (REPOS_PAGE_NUMBER - 1) + i + 1
-        print(f"Repo #{index} owner: {repo.owner.login}")
-        print(f"Repo #{index} name: {repo.name}")
-        print(f"Repo #{index} stars: {repo.stargazers_count}")
-        print(f"Repo #{index} url: {repo.html_url}")
+        repository = Repository(
+            owner=repo.owner.login,
+            name=repo.name,
+            stars=repo.stargazers_count,
+            url=repo.html_url,
+        )
+
+        print(f"Repo #{index} owner: {repository.owner}")
+        print(f"Repo #{index} name: {repository.name}")
+        print(f"Repo #{index} stars: {repository.stars}")
+        print(f"Repo #{index} url: {repository.url}")
 
         # get recent closed pull requests
         pulls = repo.get_pulls(state="closed", sort="created", direction="desc")
@@ -89,19 +96,6 @@ if __name__ == "__main__":
         end_index = PR_PAGE_SIZE * PR_PAGE_NUMBER
         for i, pr in enumerate(pulls[start_index:end_index]):
             index = PR_PAGE_SIZE * (PR_PAGE_NUMBER - 1) + i + 1
-            print(f"\tPR #{index} title: {pr.title}")
-            print(f"\tPR #{index} created at: {pr.created_at}")
-            print(f"\tPR #{index} merged at: {pr.merged_at}")
-            print(f"\tPR #{index} url: {pr.html_url}")
-            print(f"\tPR #{index} diff url: {pr.diff_url}")
-            print("")
-
-            repository = Repository(
-                owner=repo.owner.login,
-                name=repo.name,
-                stars=repo.stargazers_count,
-                url=repo.html_url,
-            )
             pull_request = PullRequest(
                 title=pr.title,
                 created_at=pr.created_at,
@@ -111,3 +105,10 @@ if __name__ == "__main__":
                 repository=repository,
             )
             pull_requests.append(pull_request)
+
+            print(f"\tPR #{index} title: {pull_request.title}")
+            print(f"\tPR #{index} created at: {pull_request.created_at}")
+            print(f"\tPR #{index} merged at: {pull_request.merged_at}")
+            print(f"\tPR #{index} url: {pull_request.url}")
+            print(f"\tPR #{index} diff url: {pull_request.diff_url}")
+            print("")
