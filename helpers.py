@@ -1,5 +1,6 @@
 import json
 import requests
+import tiktoken
 from dataclasses import dataclass, asdict, is_dataclass
 from datetime import datetime
 from typing import Optional
@@ -14,6 +15,13 @@ class Repository:
 
 
 @dataclass
+class TokenCounts:
+    title: int
+    body: int
+    diff: int
+
+
+@dataclass
 class PullRequest:
     title: str
     body: Optional[str]
@@ -23,6 +31,7 @@ class PullRequest:
     diff_url: str
     diff: Optional[str]
     repository: Repository
+    token_counts: TokenCounts
 
 
 def serialize(obj):
@@ -59,3 +68,15 @@ def get_diff(url):
     if r.status_code != 200:
         return None
     return r.text
+
+
+def count_tokens(text):
+    encoding = tiktoken.get_encoding("cl100k_base")
+    if text is None:
+        return 0
+    try:
+        num_tokens = len(encoding.encode(text))
+    except Exception as e:
+        print(e)
+        num_tokens = 0
+    return num_tokens

@@ -2,7 +2,14 @@ import os
 import time
 from dotenv import load_dotenv
 from github import Github
-from helpers import Repository, PullRequest, to_json, get_diff
+from helpers import (
+    Repository,
+    TokenCounts,
+    PullRequest,
+    to_json,
+    get_diff,
+    count_tokens,
+)
 
 
 RATE_LIMIT = 5000  # per hour
@@ -53,6 +60,12 @@ if __name__ == "__main__":
         for i, pr in enumerate(pulls[start_index:end_index]):
             time.sleep(WAIT_TIME)
             index = PR_PAGE_SIZE * (PR_PAGE_NUMBER - 1) + i + 1
+            diff = get_diff(pr.diff_url)
+            token_counts = TokenCounts(
+                title=count_tokens(pr.title),
+                body=count_tokens(pr.body),
+                diff=count_tokens(diff),
+            )
             pull_request = PullRequest(
                 title=pr.title,
                 body=pr.body,
@@ -60,8 +73,9 @@ if __name__ == "__main__":
                 merged_at=pr.merged_at,
                 url=pr.html_url,
                 diff_url=pr.diff_url,
-                diff=get_diff(pr.diff_url),
+                diff=diff,
                 repository=repository,
+                token_counts=token_counts,
             )
             pull_requests.append(pull_request)
 
@@ -70,6 +84,7 @@ if __name__ == "__main__":
             print(f"\tPR #{index} merged at: {pull_request.merged_at}")
             print(f"\tPR #{index} url: {pull_request.url}")
             print(f"\tPR #{index} diff url: {pull_request.diff_url}")
+            print(f"\tPR #{index} diff token count: {token_counts.diff}")
             print("")
 
 # save to json
