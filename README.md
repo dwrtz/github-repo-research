@@ -26,7 +26,7 @@ add your credentials to the .env file
 
 run the script
 ```bash
-python3 main.py
+python3 scrape.py
 ```
 
 # Rate Limiting
