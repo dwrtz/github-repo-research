@@ -1,3 +1,4 @@
 requests
 tiktoken
 PyGithub
+python-dotenv
