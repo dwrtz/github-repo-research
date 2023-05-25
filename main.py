@@ -9,7 +9,7 @@ gat = os.getenv("GITHUB_ACCESS_TOKEN", None)
 assert gat is not None, "Please set GITHUB_ACCESS_TOKEN in .env file"
 
 g = Github(gat)
-search_query = "stars:>=1000 language:python"
+search_query = "stars:100..10000 language:python"
 result = g.search_repositories(query=search_query, sort="stars", order="desc")
 
 PAGE_SIZE = 4
