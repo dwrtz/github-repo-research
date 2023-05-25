@@ -1,4 +1,5 @@
 import json
+import requests
 from dataclasses import dataclass, asdict, is_dataclass
 from datetime import datetime
 from typing import Optional
@@ -20,6 +21,7 @@ class PullRequest:
     merged_at: Optional[datetime]
     url: str
     diff_url: str
+    diff: Optional[str]
     repository: Repository
 
 
@@ -50,3 +52,10 @@ def from_json(filename):
         return PullRequest(**data)
 
     return [deserialize(item) for item in data]
+
+
+def get_diff(url):
+    r = requests.get(url)
+    if r.status_code != 200:
+        return None
+    return r.text
