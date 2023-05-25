@@ -57,7 +57,7 @@ def from_json(filename):
 
 
 RATE_LIMIT = 5000  # per hour
-WAIT_TIME = 3600 / (1.1 * RATE_LIMIT)  # in seconds
+WAIT_TIME = 3600 / (0.9 * RATE_LIMIT)  # in seconds
 
 # repo pagination
 REPOS_PAGE_SIZE = 64
