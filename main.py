@@ -19,6 +19,7 @@ class Repository:
 @dataclass
 class PullRequest:
     title: str
+    body: Optional[str]
     created_at: datetime
     merged_at: Optional[datetime]
     url: str
@@ -59,11 +60,11 @@ RATE_LIMIT = 5000  # per hour
 WAIT_TIME = 3600 / (1.1 * RATE_LIMIT)  # in seconds
 
 # repo pagination
-REPOS_PAGE_SIZE = 4
+REPOS_PAGE_SIZE = 64
 REPOS_PAGE_NUMBER = 1
 
 # pr pagination
-PR_PAGE_SIZE = 4
+PR_PAGE_SIZE = 64
 PR_PAGE_NUMBER = 1
 
 
@@ -105,6 +106,7 @@ if __name__ == "__main__":
             index = PR_PAGE_SIZE * (PR_PAGE_NUMBER - 1) + i + 1
             pull_request = PullRequest(
                 title=pr.title,
+                body=pr.body,
                 created_at=pr.created_at,
                 merged_at=pr.merged_at,
                 url=pr.html_url,
