@@ -29,6 +29,11 @@ run the script
 python3 scrape.py
 ```
 
+will generate a `data.json` file when finished. then analyze the data
+```bash
+python3 analyze.py
+```
+
 # Rate Limiting
 
 According to ChatGPT, the GitHub api rate limit is 5000 authenticated requests per hour.
