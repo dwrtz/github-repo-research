@@ -38,6 +38,9 @@ def generate_histogram():
     q95 = df["total_tokens"].quantile(0.95)
     q99 = df["total_tokens"].quantile(0.99)
 
+    # Calculate 90th percentile mean
+    mean_90 = df[df["total_tokens"] <= q90]["total_tokens"].mean()
+
     # Define colors
     colors = ["blue", "green", "yellow", "red"]
 
@@ -77,6 +80,16 @@ def generate_histogram():
             rotation=90,
             verticalalignment="top",
         )
+
+    # Add vertical line and annotation for the 90th percentile mean
+    plt.axvline(mean_90, color="purple", linestyle="dashed", linewidth=1)
+    plt.text(
+        mean_90,
+        plt.gca().get_ylim()[1],
+        f"90th percentile mean: {mean_90:.0f}",
+        rotation=90,
+        verticalalignment="top",
+    )
 
     plt.title("Total tokens in Pull Requests")
     plt.xlabel("Number of tokens")
