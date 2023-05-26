@@ -58,6 +58,8 @@ def from_json(filename):
             data["merged_at"] = datetime.fromisoformat(data["merged_at"])
         if "repository" in data:
             data["repository"] = Repository(**data["repository"])
+        if "token_counts" in data:
+            data["token_counts"] = TokenCounts(**data["token_counts"])
         return PullRequest(**data)
 
     return [deserialize(item) for item in data]
